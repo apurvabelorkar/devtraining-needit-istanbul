@@ -11,13 +11,35 @@
         <name>Set Requested for Value</name>
         <order/>
         <script><![CDATA[function onLoad() {
-   //Type appropriate comment here, and begin script below
-	
-	if (g_form.isNewRecord())
-		{
-			g_form.setValue('u_requested_for' , g_user.userID);
-			g_form.addInfoMessage('Value for requested for is set');
+	//Type appropriate comment here, and begin script below
+	var userID = g_user.userID;
+	if (g_form.isNewRecord()){
+		g_form.setValue('u_requested_for' , userID);
+		g_form.addInfoMessage('Value for requested for is set');
+		
+		// Instantiate the GetEmailAddress Script Include
+		var getEmailAddr = new GlideAjax('GetEmailAddress');
+		// Specify the getEmail method
+		getEmailAddr.addParam('sysparm_name','getEmail');
+		// Pass the Requested for sys_id
+		getEmailAddr.addParam('sysparm_userID', userID);
+		// Send the request to the server
+		getEmailAddr.getXML(populateEmailField);
+		
+		
+		// When the response is back from the server
+		
+	}
+	function populateEmailField(response){
+		// Extract the email address from the response, clear any value from the email field,
+		// set new value in the email field
+		var emailFromScriptInclude = response.responseXML.documentElement.getAttribute("answer");
+		if(emailFromScriptInclude != ''){
+			g_form.clearValue('u_requested_for_email');
+			g_form.setValue('u_requested_for_email',emailFromScriptInclude);
+			g_form.setReadOnly('u_requested_for_email',true);
 		}
+	}
 }
 ]]></script>
         <sys_class_name>sys_script_client</sys_class_name>
@@ -27,7 +49,7 @@
         <sys_domain>global</sys_domain>
         <sys_domain_path>/</sys_domain_path>
         <sys_id>faf2dfb2db23320099d37d9ebf9619bf</sys_id>
-        <sys_mod_count>13</sys_mod_count>
+        <sys_mod_count>15</sys_mod_count>
         <sys_name>Set Requested for Value</sys_name>
         <sys_overrides/>
         <sys_package display_value="NeedIt" source="x_58872_needit">6ead8e780f603200cd674f8ce1050ed1</sys_package>
@@ -36,7 +58,7 @@
         <sys_scope display_value="NeedIt">6ead8e780f603200cd674f8ce1050ed1</sys_scope>
         <sys_update_name>sys_script_client_faf2dfb2db23320099d37d9ebf9619bf</sys_update_name>
         <sys_updated_by>abelorkar</sys_updated_by>
-        <sys_updated_on>2017-06-28 13:13:13</sys_updated_on>
+        <sys_updated_on>2017-08-12 09:12:26</sys_updated_on>
         <table>x_58872_needit_needit</table>
         <type>onLoad</type>
         <ui_type>10</ui_type>
